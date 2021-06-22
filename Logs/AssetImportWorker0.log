@@ -88,3 +88,4 @@ Received Import Request.
 Start importing Assets/Scenes/DatAgora.unity using Guid(05ebdc0773627ea45b83a263a558572e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd13fb8a1eee352e72b863c45664d8994') in 0,008876 seconds
   Import took 0,011783 seconds .
 
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
