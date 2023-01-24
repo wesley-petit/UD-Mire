@@ -17,7 +17,7 @@
 ## Use of the Project :
 ### On windows
 - Import the Project on your PC
-- Launching with Unity 2019.2.19
+- Launching with Unity 2021.3.11
 - Open Datagora scene
 - Setup your HSV value to recognize your building's color
 - You can modify the layout of your buildings, this will update in unity
