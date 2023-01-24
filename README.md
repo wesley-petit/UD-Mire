@@ -1,6 +1,6 @@
 # Recognition City
 <em>Recognition of blue rectangle on a white paper that simulate buildings and red triangle which give a POV for the camera in Unity </em><br>
-**Corentin GAUTIER**
+**Corentin GAUTIER** - **Nils CARRON** - **Wesley PETIT**
 
 ## Implemented features :
 - Images processing (expansion, convert gray image)
