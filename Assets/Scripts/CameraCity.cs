@@ -25,6 +25,7 @@ public class CameraCity : MonoBehaviour
 
 
     //-----public-----//
+    public int CameraIndex = 0;
     public Vector3 seuilBas;
     public Vector3 seuilHaut;
     public Vector3 seuilBasBleu;
@@ -38,7 +39,7 @@ public class CameraCity : MonoBehaviour
     {
 
         imageMat = new Mat();
-        fluxVideo = new VideoCapture(0, VideoCapture.API.Any);
+        fluxVideo = new VideoCapture(CameraIndex, VideoCapture.API.Any);
         fluxVideo.FlipHorizontal = true;
         fluxVideo.ImageGrabbed += ProcessFrame;
     }
