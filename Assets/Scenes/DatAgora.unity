@@ -169,10 +169,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraIndex: 1
-  seuilBas: {x: 0, y: 100, z: 0}
-  seuilHaut: {x: 25, y: 255, z: 255}
-  seuilBasBleu: {x: 0, y: 120, z: 40}
-  seuilHautBleu: {x: 160, y: 255, z: 255}
+  blueLegoHSV: {fileID: 11400000, guid: 8023081db715a8540956912a3e4d036b, type: 2}
+  redLegoHSV: {fileID: 11400000, guid: 408bfd303611062439938c06493d3810, type: 2}
+  viewProfileHSV: {fileID: 11400000, guid: 8023081db715a8540956912a3e4d036b, type: 2}
   Scale: 40
   listTrees:
   - {fileID: 129214, guid: 84abc0b4a3d89cf42994a49c7f27d79e, type: 3}

@@ -26,10 +26,9 @@ public class CameraCity : MonoBehaviour
 
     //-----public-----//
     public int CameraIndex = 0;
-    public Vector3 seuilBas;
-    public Vector3 seuilHaut;
-    public Vector3 seuilBasBleu;
-    public Vector3 seuilHautBleu;
+    public HSVProfileSO blueLegoHSV;
+    public HSVProfileSO redLegoHSV;
+    public HSVProfileSO viewProfileHSV;
     public int Scale = 40;
     public List<GameObject> listTrees = new List<GameObject>();
     public GameObject Detection;
@@ -37,7 +36,6 @@ public class CameraCity : MonoBehaviour
 
     void Start()
     {
-
         imageMat = new Mat();
         fluxVideo = new VideoCapture(CameraIndex, VideoCapture.API.Any);
         fluxVideo.FlipHorizontal = true;
@@ -48,18 +46,16 @@ public class CameraCity : MonoBehaviour
     void Update()
     {
         //setup HSV Color
-        seuilbasHsv = new Hsv(seuilBas.x, seuilBas.y, seuilBas.z);
-        seuilhautHsv = new Hsv(seuilHaut.x, seuilHaut.y, seuilHaut.z);
-
-        seuilbasHsvBleu = new Hsv(seuilBasBleu.x, seuilBasBleu.y, seuilBasBleu.z);
-        seuilhautHsvBleu = new Hsv(seuilBasBleu.x, seuilBasBleu.y, seuilBasBleu.z);
+        seuilbasHsv = new Hsv(viewProfileHSV.minThreshold.x, viewProfileHSV.minThreshold.y, viewProfileHSV.minThreshold.z);
+        seuilhautHsv = new Hsv(viewProfileHSV.maxThreshold.x, viewProfileHSV.maxThreshold.y, viewProfileHSV.maxThreshold.z);
 
         fluxVideo.Grab();
 
         //converti
-        Image<Gray, byte> imageSeuilLimit = Convert(seuilBas, seuilHaut);
-        Image<Gray, byte> imageSeuilLimitBleu = Convert(seuilBasBleu, seuilHautBleu);
-        Image<Gray, byte> imageSeuilLimitDilater = Convert(seuilBas, seuilHaut);
+        Image<Gray, byte> imageSeuilLimit = Convert(viewProfileHSV.minThreshold, viewProfileHSV.maxThreshold);
+        Image<Gray, byte> imageSeuilLimitBleu = Convert(blueLegoHSV.minThreshold, blueLegoHSV.maxThreshold);
+        Image<Gray, byte> imageSeuilLimitRed = Convert(redLegoHSV.minThreshold, redLegoHSV.maxThreshold);
+        Image<Gray, byte> imageSeuilLimitDilater = Convert(viewProfileHSV.minThreshold, viewProfileHSV.maxThreshold);
         //dilate pour affiner les trais
         var strutElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
         CvInvoke.Dilate(imageSeuilLimitDilater, imageSeuilLimit, strutElement, new Point(2, 2), 1, BorderType.Default, new MCvScalar());
@@ -67,8 +63,17 @@ public class CameraCity : MonoBehaviour
         var strutElementBlue = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
         CvInvoke.Dilate(imageSeuilLimitBleu, imageSeuilLimitBleu, strutElementBlue, new Point(2, 2), 1, BorderType.Default, new MCvScalar());
 
+        // Red
+        var strutElementRed = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
+        CvInvoke.Dilate(imageSeuilLimitRed, imageSeuilLimitRed, strutElementRed, new Point(2, 2), 1, BorderType.Default, new MCvScalar());
+
         //Recognition building
-        buildings = DrawRectangle(imageSeuilLimitBleu, "Arbre");
+        buildings = DrawRectangle(imageSeuilLimitBleu, "Bleu");
+
+        var redBuildings = DrawRectangle(imageSeuilLimitBleu, "Rouge");
+        foreach (var redBuilding in redBuildings)
+             buildings.Add(redBuilding);   
+
         //ListTriangles = DrawTriangle(imageSeuilLimit, "triangle");
         //CvInvoke.Imshow("Image seuile POV", imageSeuilLimit.Mat);
         CvInvoke.Imshow("Image seuile dilater", imageSeuilLimitDilater.Mat);
