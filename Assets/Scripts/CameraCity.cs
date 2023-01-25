@@ -2,7 +2,6 @@
 using System.Drawing;//Point
 using Emgu.CV;
 using Emgu.CV.Util;//Vectors
-using Emgu.CV.CvEnum;//Utility for constants
 using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
@@ -11,72 +10,41 @@ public class CameraCity : MonoBehaviour
 {
     //-----private-----//
     private Mat imageMat;
-    private Mat imageHSV = new Mat();
     private VectorOfVectorOfPoint contours;
     private VideoCapture fluxVideo;
-    private Hsv seuilbasHsv;
-    private Hsv seuilhautHsv;
-    private Hsv seuilbasHsvBleu;
-    private Hsv seuilhautHsvBleu;
     private List<RotatedRect> buildings;
     private List<Triangle2DF> ListTriangles = new List<Triangle2DF>();
     private List<GameObject> listBuilding =  new List<GameObject>();
     private GameObject goMire;
 
-
     //-----public-----//
     public int CameraIndex = 0;
-    public HSVProfileSO blueLegoHSV;
-    public HSVProfileSO redLegoHSV;
-    public HSVProfileSO viewProfileHSV;
     public int Scale = 40;
     public List<GameObject> listTrees = new List<GameObject>();
     public GameObject Detection;
-
+    public LegoDetector[] legosDetectors = new LegoDetector[0];
 
     void Start()
     {
         imageMat = new Mat();
         fluxVideo = new VideoCapture(CameraIndex, VideoCapture.API.Any);
-        fluxVideo.FlipHorizontal = true;
         fluxVideo.ImageGrabbed += ProcessFrame;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //setup HSV Color
-        seuilbasHsv = new Hsv(viewProfileHSV.minThreshold.x, viewProfileHSV.minThreshold.y, viewProfileHSV.minThreshold.z);
-        seuilhautHsv = new Hsv(viewProfileHSV.maxThreshold.x, viewProfileHSV.maxThreshold.y, viewProfileHSV.maxThreshold.z);
-
         fluxVideo.Grab();
 
-        //converti
-        Image<Gray, byte> imageSeuilLimit = Convert(viewProfileHSV.minThreshold, viewProfileHSV.maxThreshold);
-        Image<Gray, byte> imageSeuilLimitBleu = Convert(blueLegoHSV.minThreshold, blueLegoHSV.maxThreshold);
-        Image<Gray, byte> imageSeuilLimitRed = Convert(redLegoHSV.minThreshold, redLegoHSV.maxThreshold);
-        Image<Gray, byte> imageSeuilLimitDilater = Convert(viewProfileHSV.minThreshold, viewProfileHSV.maxThreshold);
-        //dilate pour affiner les trais
-        var strutElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
-        CvInvoke.Dilate(imageSeuilLimitDilater, imageSeuilLimit, strutElement, new Point(2, 2), 1, BorderType.Default, new MCvScalar());
-
-        var strutElementBlue = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
-        CvInvoke.Dilate(imageSeuilLimitBleu, imageSeuilLimitBleu, strutElementBlue, new Point(2, 2), 1, BorderType.Default, new MCvScalar());
-
-        // Red
-        var strutElementRed = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
-        CvInvoke.Dilate(imageSeuilLimitRed, imageSeuilLimitRed, strutElementRed, new Point(2, 2), 1, BorderType.Default, new MCvScalar());
-
-        //Recognition building
-        buildings = DrawRectangle(imageSeuilLimitBleu, "Bleu");
-
-        var redBuildings = DrawRectangle(imageSeuilLimitBleu, "Rouge");
-        foreach (var redBuilding in redBuildings)
-             buildings.Add(redBuilding);   
-
-        //ListTriangles = DrawTriangle(imageSeuilLimit, "triangle");
-        //CvInvoke.Imshow("Image seuile POV", imageSeuilLimit.Mat);
-        CvInvoke.Imshow("Image seuile dilater", imageSeuilLimitDilater.Mat);
+        // Copy and filter on original to avoid detection on draw legos
+        Mat original = new Mat();
+        imageMat.CopyTo(original);
+        foreach (var detector in legosDetectors)
+        {
+            var filterImage = detector.Filter(ref original);
+            detector.DrawLegos(ref imageMat, filterImage);
+        }
+        
         CvInvoke.Imshow("Image", imageMat);
         CvInvoke.WaitKey(24);
     }
@@ -98,67 +66,6 @@ public class CameraCity : MonoBehaviour
         {
             Debug.Log(exception.Message);
         }
-    }
-
-    //convert image in black and white
-    Image<Gray, byte> Convert(Vector3 seuilb, Vector3 seuilh)
-    {
-        CvInvoke.CvtColor(imageMat, imageHSV, ColorConversion.Bgr2Hsv);
-        CvInvoke.Blur(imageHSV, imageHSV, new Size(4, 4), new Point(1, 1));
-        seuilbasHsv = new Hsv(seuilb.x, seuilb.y, seuilb.z);
-        seuilhautHsv = new Hsv(seuilh.x, seuilh.y, seuilh.z);
-        Image<Hsv, byte> imgConverti = imageHSV.ToImage<Hsv, byte>();
-        Image<Gray, byte> imgseuil = imgConverti.InRange(seuilbasHsv, seuilhautHsv);
-        return imgseuil;
-    }
-
-    //fonction pour dessiner les limits des obj et creer leur centroide
-    List<RotatedRect> DrawRectangle(Image<Gray, byte> imageSeuil, String name)
-    {
-        List<RotatedRect> boxList = new List<RotatedRect>();
-        contours = new VectorOfVectorOfPoint();
-        Mat m = new Mat();
-        CvInvoke.FindContours(imageSeuil, contours, m, Emgu.CV.CvEnum.RetrType.External, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
-
-        for (int i = 0; i < contours.Size; i++)
-        {
-            double perimeter = CvInvoke.ArcLength(contours[i], true);
-            VectorOfPoint approx = new VectorOfPoint();
-            CvInvoke.ApproxPolyDP(contours[i], approx, 0.04 * perimeter, true);
-            if (CvInvoke.ContourArea(approx, false) > 250) //only consider contours with area greater than 250
-            {
-                if (approx.Size == 4)//The contour has 4 vertices, it is a rectangle
-                {
-                    bool isRectangle = true;
-                    Point[] pts = approx.ToArray();
-                    LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
-
-                    for (int j = 0; j < edges.Length; j++)
-                    {
-                        double angle = Math.Abs(
-                            edges[(j + 1) % edges.Length].GetExteriorAngleDegree(edges[j]));
-                        if (angle < 80 || angle > 100)
-                        {
-                            isRectangle = false;
-                            break;
-                        }
-                    }
-                    if (isRectangle) boxList.Add(CvInvoke.MinAreaRect(approx));
-                }
-
-                foreach (RotatedRect box in boxList)
-                {
-                    CvInvoke.Polylines(imageMat, Array.ConvertAll(box.GetVertices(), Point.Round), true,
-                        new Bgr(System.Drawing.Color.Green).MCvScalar, 2);
-                    var moments = CvInvoke.Moments(contours[i]);
-                    int x = (int)(moments.M10 / moments.M00);
-                    int y = (int)(moments.M01 / moments.M00);
-                    CvInvoke.PutText(imageMat, name, new Point(x, y), Emgu.CV.CvEnum.FontFace.HersheySimplex, 0.5, new MCvScalar(0, 0, 255), 2);
-                }
-            }
-        }
-
-        return boxList;
     }
 
     List<Triangle2DF> DrawTriangle(Image<Gray, byte> imageSeuil, String name)

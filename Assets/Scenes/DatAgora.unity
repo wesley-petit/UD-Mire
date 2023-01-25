@@ -134,6 +134,10 @@ GameObject:
   m_Component:
   - component: {fileID: 560083367}
   - component: {fileID: 560083368}
+  - component: {fileID: 560083372}
+  - component: {fileID: 560083371}
+  - component: {fileID: 560083370}
+  - component: {fileID: 560083369}
   m_Layer: 0
   m_Name: Capture
   m_TagString: Untagged
@@ -169,9 +173,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CameraIndex: 1
-  blueLegoHSV: {fileID: 11400000, guid: 8023081db715a8540956912a3e4d036b, type: 2}
-  redLegoHSV: {fileID: 11400000, guid: 408bfd303611062439938c06493d3810, type: 2}
-  viewProfileHSV: {fileID: 11400000, guid: 8023081db715a8540956912a3e4d036b, type: 2}
   Scale: 40
   listTrees:
   - {fileID: 129214, guid: 84abc0b4a3d89cf42994a49c7f27d79e, type: 3}
@@ -192,6 +193,67 @@ MonoBehaviour:
   - {fileID: 150688, guid: 2c0b7df01c33a2643bc67c60fd616e8c, type: 3}
   Detection: {fileID: 4820651545953548118, guid: 15ea0006e117022448e08755ba6efb15,
     type: 3}
+  legosDetectors:
+  - {fileID: 560083372}
+  - {fileID: 560083371}
+  - {fileID: 560083370}
+  - {fileID: 560083369}
+--- !u!114 &560083369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 560083366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d7e1550ad561346a2a6efb4c87a346, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  legoProfile: {fileID: 11400000, guid: 18ec86077b051b844acb04bd254b1c3b, type: 2}
+  colorName: Green
+--- !u!114 &560083370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 560083366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d7e1550ad561346a2a6efb4c87a346, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  legoProfile: {fileID: 11400000, guid: 14f56885be16c3e498d04fce35ee2386, type: 2}
+  colorName: Yellow
+--- !u!114 &560083371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 560083366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d7e1550ad561346a2a6efb4c87a346, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  legoProfile: {fileID: 11400000, guid: 408bfd303611062439938c06493d3810, type: 2}
+  colorName: Red
+--- !u!114 &560083372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 560083366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5d7e1550ad561346a2a6efb4c87a346, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  legoProfile: {fileID: 11400000, guid: 8023081db715a8540956912a3e4d036b, type: 2}
+  colorName: Blue
 --- !u!1 &796587483
 GameObject:
   m_ObjectHideFlags: 0

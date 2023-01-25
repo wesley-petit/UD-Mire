@@ -1,11 +1,6 @@
 ﻿using UnityEngine;
-
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-
 using Emgu.CV;
 using Emgu.CV.Util;
 using Emgu.CV.CvEnum;
