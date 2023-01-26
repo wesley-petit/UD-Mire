@@ -199,14 +199,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 424268493}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: -0.010131796, y: -0.70703423, z: 0.70703423, w: -0.010131796}
+  m_LocalPosition: {x: 0.492, y: 5.24, z: -0.586}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 181.642}
 --- !u!1 &479977804
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,9 +249,9 @@ GameObject:
   m_Component:
   - component: {fileID: 490484702}
   - component: {fileID: 490484707}
+  - component: {fileID: 490484708}
   - component: {fileID: 490484706}
   - component: {fileID: 490484705}
-  - component: {fileID: 490484704}
   - component: {fileID: 490484703}
   m_Layer: 0
   m_Name: Capture
@@ -288,27 +288,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   legoProfile: {fileID: 11400000, guid: 18ec86077b051b844acb04bd254b1c3b, type: 2}
+  legoDetectorSettings: {fileID: 490484708}
   colorName: Green
   bShowDebugWindow: 0
   contourColor: {x: 0, y: 255, z: 0}
-  minValidContourArea: 250
---- !u!114 &490484704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490484701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5d7e1550ad561346a2a6efb4c87a346, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  legoProfile: {fileID: 11400000, guid: 14f56885be16c3e498d04fce35ee2386, type: 2}
-  colorName: Yellow
-  bShowDebugWindow: 0
-  contourColor: {x: 0, y: 255, z: 255}
-  minValidContourArea: 250
+  motif: {fileID: 7218672129972671066, guid: 17e386b47fdf9c449b45cf6570a294b2, type: 3}
 --- !u!114 &490484705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,10 +306,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   legoProfile: {fileID: 11400000, guid: 408bfd303611062439938c06493d3810, type: 2}
+  legoDetectorSettings: {fileID: 490484708}
   colorName: Red
   bShowDebugWindow: 0
   contourColor: {x: 0, y: 0, z: 255}
-  minValidContourArea: 250
+  motif: {fileID: 7518877186565791332, guid: 8525c5c311ebce848af118a5b223ae4d, type: 3}
 --- !u!114 &490484706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,10 +324,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   legoProfile: {fileID: 11400000, guid: 8023081db715a8540956912a3e4d036b, type: 2}
+  legoDetectorSettings: {fileID: 490484708}
   colorName: Blue
   bShowDebugWindow: 0
   contourColor: {x: 255, y: 0, z: 0}
-  minValidContourArea: 250
+  motif: {fileID: 2536054227008389832, guid: f55dacfb72e90c34e99891a95a1dd6a2, type: 3}
 --- !u!114 &490484707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,8 +365,23 @@ MonoBehaviour:
   legosDetectors:
   - {fileID: 490484706}
   - {fileID: 490484705}
-  - {fileID: 490484704}
   - {fileID: 490484703}
+--- !u!114 &490484708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490484701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9d41edf223ea7546931f8f68a1cf42d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WebcamSize: {x: 600, y: 600}
+  MinValidContourArea: 250
+  MaxDistanceBetweenLegos: 0.1
+  BirthTimeInSecondes: 4
 --- !u!1 &541150144
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +476,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &1382363422
+--- !u!1 &798167777
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -483,8 +484,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1382363424}
-  - component: {fileID: 1382363423}
+  - component: {fileID: 798167779}
+  - component: {fileID: 798167778}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -492,13 +493,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!212 &1382363423
+--- !u!212 &798167778
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1382363422}
+  m_GameObject: {fileID: 798167777}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -536,7 +537,7 @@ SpriteRenderer:
   m_Sprite: {fileID: 21300000, guid: 851e097a6cbe683498f858971ae3ba99, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
-  m_FlipY: 0
+  m_FlipY: 1
   m_DrawMode: 0
   m_Size: {x: 10, y: 5}
   m_AdaptiveModeThreshold: 0.5
@@ -544,16 +545,16 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!4 &1382363424
+--- !u!4 &798167779
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1382363422}
+  m_GameObject: {fileID: 798167777}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.18, y: 0, z: 0.04}
+  m_LocalScale: {x: 0.95, y: 0.95, z: 0.95}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
