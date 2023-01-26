@@ -16,7 +16,8 @@ public class LegoDetector : MonoBehaviour
     public VectorOfVectorOfPoint validContours = new VectorOfVectorOfPoint();
     public List<Graffiti> streetArts = new();
     public GameObject motif;
-
+    public SpriteSpawner spriteSpawner;
+    
     /// <summary>
     /// Remove others objects and convert to black and white
     /// </summary>
@@ -180,6 +181,7 @@ public class LegoDetector : MonoBehaviour
 
                 if (legoDetectorSettings.BirthTimeInSecondes < current.PregnancyTimeInSeconds)
                 {
+                    spriteSpawner.Spawn(colorName);
                     Debug.Log("New Graffitis");
 
                     var worldPosition = legoDetectorSettings.emguPositionTransfer.Convert(current.Position);
