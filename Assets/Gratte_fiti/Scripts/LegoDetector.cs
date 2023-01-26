@@ -61,7 +61,7 @@ public class LegoDetector : MonoBehaviour
             double perimeter = CvInvoke.ArcLength(contours[i], true);
             VectorOfPoint approx = new VectorOfPoint();
             CvInvoke.ApproxPolyDP(contours[i], approx, 0.04 * perimeter, true);
-            if (legoDetectorSettings.MinValidContourArea < CvInvoke.ContourArea(approx, false))
+            if (legoDetectorSettings.MinValidContourArea < CvInvoke.ContourArea(approx, false) && CvInvoke.ContourArea(approx, false) < legoDetectorSettings.MaxValidContourArea)
             {
                 largeContous.Add(contours[i]);
 
@@ -185,6 +185,7 @@ public class LegoDetector : MonoBehaviour
                     var worldPosition = legoDetectorSettings.emguPositionTransfer.Convert(current.Position);
                     
                     current.Motif = Instantiate(motif, worldPosition, Quaternion.identity);
+                    current.Motif.transform.position = worldPosition;
                     current.bNew = false;
                 }
             }

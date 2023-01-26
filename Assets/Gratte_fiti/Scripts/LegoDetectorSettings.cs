@@ -5,9 +5,9 @@ using UnityEngine;
 /// </summary>
 public class LegoDetectorSettings : MonoBehaviour
 {
-    public Vector2 WebcamSize = new Vector2(600, 600);
-    public int MinValidContourArea = 250;
+    public float MinValidContourArea = 7;
+    public float MaxValidContourArea = 30;
     public float MaxDistanceBetweenLegos = 0.1f;
-    public int BirthTimeInSecondes = 4;                         // Time in seconds to display a lego
+    public float BirthTimeInSecondes = 1.5f;                         // Time in seconds to display a lego
     public EmguPositionTransfer emguPositionTransfer;
 }
