@@ -4,6 +4,8 @@ using Emgu.CV.Util;//Vectors
 using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using Emgu.CV.CvEnum;
 
 public class CameraCity : MonoBehaviour
 {
@@ -18,6 +20,7 @@ public class CameraCity : MonoBehaviour
 
     //-----public-----//
     public int CameraIndex = 0;
+    public Vector2 blackScreenMax = new Vector2(600, 100);
     public int Scale = 40;
     public List<GameObject> listTrees = new List<GameObject>();
     public GameObject Detection;
@@ -63,6 +66,7 @@ public class CameraCity : MonoBehaviour
         try
         {
             fluxVideo.Retrieve(imageMat, 0);
+            CvInvoke.Rectangle(imageMat, new Rectangle(0, 0, (int)blackScreenMax.x, (int)blackScreenMax.y), new MCvScalar(0, 0, 0), -1);
         }
         catch (Exception exception)
         {
