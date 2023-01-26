@@ -29,7 +29,6 @@ public class EmguPositionTransfer : MonoBehaviour
         var xUnity = minUnity.x - xRatio * widthUnity;
         var yUnity = minUnity.y + yRatio * lengthUnity;
 
-        // place.transform.position = new Vector3((float)xUnity, 0.043f, (float)yUnity);
         return new Vector3((float)xUnity, 0.043f,(float)yUnity);
     }
 }
