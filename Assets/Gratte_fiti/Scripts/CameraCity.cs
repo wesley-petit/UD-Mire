@@ -38,10 +38,13 @@ public class CameraCity : MonoBehaviour
         // Copy and filter on original to avoid detection on draw legos
         Mat original = new Mat();
         imageMat.CopyTo(original);
+
+        // Game loop        
         foreach (var detector in legosDetectors)
         {
             var filterImage = detector.Filter(ref original);
-            detector.DrawLegos(ref imageMat, filterImage);
+            detector.UpdateDetection(ref imageMat, filterImage);
+            detector.DrawLegos(ref imageMat);
         }
         
         CvInvoke.Imshow("Image", imageMat);

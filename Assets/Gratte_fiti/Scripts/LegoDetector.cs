@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Emgu.CV;
@@ -10,10 +9,13 @@ using UnityEngine;
 public class LegoDetector : MonoBehaviour
 {
     public HSVProfileSO legoProfile;
+    public LegoDetectorSettings legoDetectorSettings;
     public string colorName;
     public bool bShowDebugWindow;
     public Vector3 contourColor = new Vector3(0, 255, 0);
-    public int minValidContourArea = 250;
+    public VectorOfVectorOfPoint validContours = new VectorOfVectorOfPoint();
+    public List<Graffiti> streetArts = new();
+    public GameObject motif;
 
     /// <summary>
     /// Remove others objects and convert to black and white
@@ -38,9 +40,10 @@ public class LegoDetector : MonoBehaviour
         return filterImg;
     }
     
-    //fonction pour dessiner les limits des obj et creer leur centroide
-    public void DrawLegos(ref Mat webcamFrame, in Image<Gray, byte> filterImage)
+    public void UpdateDetection(ref Mat webcamFrame, in Image<Gray, byte> filterImage)
     {
+        ResetFlags();
+        
         // Dilate to delete small object from analysis
         var structElement = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(2, 2));
         CvInvoke.Dilate(filterImage, filterImage, structElement, new Point(2, 2), 1, BorderType.Default, new MCvScalar());
@@ -50,26 +53,47 @@ public class LegoDetector : MonoBehaviour
         Mat m = new Mat();
         CvInvoke.FindContours(filterImage, contours, m, Emgu.CV.CvEnum.RetrType.List, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
 
-        var mcvColor = new MCvScalar(contourColor.x, contourColor.y, contourColor.z);
+        List<VectorOfPoint> largeContous = new List<VectorOfPoint>();
+        
+        // Accept only large contour as a lego
         for (int i = 0; i < contours.Size; i++)
         {
             double perimeter = CvInvoke.ArcLength(contours[i], true);
             VectorOfPoint approx = new VectorOfPoint();
             CvInvoke.ApproxPolyDP(contours[i], approx, 0.04 * perimeter, true);
-            if (minValidContourArea < CvInvoke.ContourArea(approx, false)) //only consider contours with area greater than 250
+            if (legoDetectorSettings.MinValidContourArea < CvInvoke.ContourArea(approx, false))
             {
-                CvInvoke.DrawContours(webcamFrame, contours, i, mcvColor);
+                largeContous.Add(contours[i]);
 
                 var moments = CvInvoke.Moments(contours[i]);
                 int x = (int)(moments.M10 / moments.M00);
                 int y = (int)(moments.M01 / moments.M00);
-                Debug.Log(x);
-                CvInvoke.PutText(webcamFrame, colorName, new Point(x, y), Emgu.CV.CvEnum.FontFace.HersheySimplex, 0.5, new MCvScalar(0, 0, 255), 2);        
+                var detectedPosition = new Vector2(x, y);
+
+                if (colorName == "Blue")
+                {
+                    Debug.Log(detectedPosition);
+                }
+                
+                // Check if it's a new detection                
+                bool bFound = false;
+                foreach (var current in streetArts)
+                {
+                    if (Vector2.Distance(current.Position, detectedPosition) < legoDetectorSettings.MaxDistanceBetweenLegos)
+                    {
+                        current.bPresent = true;
+                        bFound = true;
+                        break;
+                    }
+                }
+
+                if (!bFound)
+                {
+                    streetArts.Add(new Graffiti(detectedPosition, true, true));    
+                }
             }
-            else
-            {
-                Debug.Log(colorName);
-            }
+
+            validContours = new VectorOfVectorOfPoint(largeContous.ToArray());
         }
         
   
@@ -118,5 +142,64 @@ public class LegoDetector : MonoBehaviour
         // }
         //
         // return boxList;
+    }
+
+    private void ResetFlags()
+    {
+        foreach (var current in streetArts)
+            current.bPresent = false;
+    }
+
+    //fonction pour dessiner les limits des obj et creer leur centroide
+    public void DrawLegos(ref Mat webcamFrame)
+    {
+        var mcvColor = new MCvScalar(contourColor.x, contourColor.y, contourColor.z);
+
+        if (validContours.Size != 0)
+        {
+            CvInvoke.DrawContours(webcamFrame, validContours, -1, mcvColor);
+        }
+
+        List<int> oldGraffitisIndex = new List<int>();
+        for (int i = 0; i < streetArts.Count; i++)
+        {
+            var current = streetArts[i];
+            if (!current.bPresent)
+            {
+                oldGraffitisIndex.Add(i);
+                Debug.Log("Remove");
+                continue;
+            }
+            
+            CvInvoke.PutText(webcamFrame, colorName, new Point((int)current.Position.x, (int)current.Position.y), Emgu.CV.CvEnum.FontFace.HersheySimplex, 0.5, new MCvScalar(0, 0, 255), 2);
+
+            // New motif detected since some time
+            if (current.bNew)
+            {
+                current.PregnancyTimeInSeconds += Time.deltaTime;
+
+                if (legoDetectorSettings.BirthTimeInSecondes < current.PregnancyTimeInSeconds)
+                {
+                    Debug.Log("New Graffitis");
+
+                    var worldPosition = new Vector2(current.Position.x / legoDetectorSettings.WebcamSize.x,
+                        current.Position.y / legoDetectorSettings.WebcamSize.y);
+                    
+                    current.Motif = Instantiate(motif, worldPosition, Quaternion.identity);
+                    current.bNew = false;
+                }
+            }
+        }
+        
+        // // Reverse to delete last index first
+        // // If we remove the first index, all following index will change. But it's not the case if we start at the last index.
+        // oldGraffitisIndex.Reverse();
+        // while (oldGraffitisIndex.Count != 0)
+        // {
+        //     var graf = streetArts[oldGraffitisIndex[0]];
+        //     Destroy(graf.Motif);
+        //     streetArts.Remove(graf);
+        //     oldGraffitisIndex.RemoveAt(0);
+        // }
     }
 }
