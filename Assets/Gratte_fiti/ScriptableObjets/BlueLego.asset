@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8975b705ce13ff4eb4ccf35ec653491, type: 3}
   m_Name: BlueLego
   m_EditorClassIdentifier: 
-  minThreshold: {x: 100, y: 200, z: 130}
+  minThreshold: {x: 100, y: 170, z: 120}
   maxThreshold: {x: 130, y: 255, z: 255}
