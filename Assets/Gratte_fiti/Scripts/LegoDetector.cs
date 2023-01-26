@@ -182,8 +182,7 @@ public class LegoDetector : MonoBehaviour
                 {
                     Debug.Log("New Graffitis");
 
-                    var worldPosition = new Vector2(current.Position.x / legoDetectorSettings.WebcamSize.x,
-                        current.Position.y / legoDetectorSettings.WebcamSize.y);
+                    var worldPosition = legoDetectorSettings.emguPositionTransfer.Convert(current.Position);
                     
                     current.Motif = Instantiate(motif, worldPosition, Quaternion.identity);
                     current.bNew = false;

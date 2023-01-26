@@ -9,4 +9,5 @@ public class LegoDetectorSettings : MonoBehaviour
     public int MinValidContourArea = 250;
     public float MaxDistanceBetweenLegos = 0.1f;
     public int BirthTimeInSecondes = 4;                         // Time in seconds to display a lego
+    public EmguPositionTransfer emguPositionTransfer;
 }
