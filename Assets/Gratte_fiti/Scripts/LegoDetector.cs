@@ -181,13 +181,13 @@ public class LegoDetector : MonoBehaviour
 
                 if (legoDetectorSettings.BirthTimeInSecondes < current.PregnancyTimeInSeconds)
                 {
-                    spriteSpawner.Spawn(colorName);
+                    // spriteSpawner.Spawn(colorName);
                     Debug.Log("New Graffitis");
 
-                    var worldPosition = legoDetectorSettings.emguPositionTransfer.Convert(current.Position);
-                    
-                    current.Motif = Instantiate(motif, worldPosition, Quaternion.identity);
-                    current.Motif.transform.position = worldPosition;
+                    // var worldPosition = legoDetectorSettings.emguPositionTransfer.Convert(current.Position);
+                    //
+                    // current.Motif = Instantiate(motif, worldPosition, Quaternion.identity);
+                    // current.Motif.transform.position = worldPosition;
                     current.bNew = false;
                 }
             }
